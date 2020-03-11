@@ -19,7 +19,6 @@ import sgtk
 
 
 class MultiWorkFiles(sgtk.platform.Application):
-
     def init_app(self):
         """
         Called as the application is being initialized
@@ -28,7 +27,9 @@ class MultiWorkFiles(sgtk.platform.Application):
         self.__is_pyside_unstable = None
 
         if not self.engine.has_ui:
-            self.logger.debug("The engine reports that there is no UI. Workfiles2 will not continue initializing.")
+            self.logger.debug(
+                "The engine reports that there is no UI. Workfiles2 will not continue initializing."
+            )
             return
 
         if self.engine.name == "tk-mari":
@@ -42,18 +43,17 @@ class MultiWorkFiles(sgtk.platform.Application):
             self.show_file_open_dlg,
             {
                 "short_name": "file_open",
-
                 # dark themed icon for engines that recognize this format
                 "icons": {
                     "dark": {
                         "png": os.path.join(
                             os.path.dirname(__file__),
                             "resources",
-                            "file_open_menu_icon.png"
+                            "file_open_menu_icon.png",
                         )
                     }
-                }
-            }
+                },
+            },
         )
 
         # register the file save command
@@ -62,18 +62,17 @@ class MultiWorkFiles(sgtk.platform.Application):
             self.show_file_save_dlg,
             {
                 "short_name": "file_save",
-
                 # dark themed icon for engines that recognize this format
                 "icons": {
                     "dark": {
                         "png": os.path.join(
                             os.path.dirname(__file__),
                             "resources",
-                            "file_save_menu_icon.png"
+                            "file_save_menu_icon.png",
                         )
                     }
-                }
-            }
+                },
+            },
         )
 
         # Process auto startup options - but only on certain supported platforms
@@ -82,24 +81,27 @@ class MultiWorkFiles(sgtk.platform.Application):
         # the behaviour can be very different.
         #
         # currently, we have done QA on the following engines:
-        SUPPORTED_ENGINES = ["tk-nuke", "tk-maya", "tk-3dsmax"]
+        SUPPORTED_ENGINES = ["tk-nuke", "tk-maya", "tk-3dsmax", "tk-alias", "tk-vred"]
 
         if not hasattr(sgtk, "_tk_multi_workfiles2_launch_at_startup"):
 
             # this is the very first time we have run this application
             sgtk._tk_multi_workfiles2_launch_at_startup = True
 
-            if self.get_setting('launch_at_startup'):
+            if self.get_setting("launch_at_startup"):
                 # show the file manager UI
                 if self.engine.name in SUPPORTED_ENGINES:
                     # use a single-shot timer to show the open dialog to allow everything to
                     # finish being set up first:
                     from sgtk.platform.qt import QtCore
+
                     QtCore.QTimer.singleShot(200, self.show_file_open_dlg)
                 else:
-                    self.log_warning("Sorry, the launch at startup option is currently not supported "
-                                     "in this engine! You can currently only use it with the following "
-                                     "engines: %s" % ", ".join(SUPPORTED_ENGINES))
+                    self.log_warning(
+                        "Sorry, the launch at startup option is currently not supported "
+                        "in this engine! You can currently only use it with the following "
+                        "engines: %s" % ", ".join(SUPPORTED_ENGINES)
+                    )
 
     def destroy_app(self):
         """
@@ -156,11 +158,10 @@ class MultiWorkFiles(sgtk.platform.Application):
         :returns: An RGBA tuple of int (0-255).
         """
         color = sgtk.platform.qt.QtGui.QColor(self.style_constants["SG_ALERT_COLOR"])
-        return color.red(), color.green(), color.blue(), color.alpha()
+        return color.red(), color.green(), color.blue()
 
 
 class DebugWrapperShotgun(object):
-
     def __init__(self, sg_instance, log_fn):
         self._sg = sg_instance
         self._log_fn = log_fn
